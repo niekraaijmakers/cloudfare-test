@@ -1,3 +1,3 @@
 interface Bindings {
-	COUNTER: DurableObjectNamespace;
+	SITEMAP_INDEX_GENERATOR: DurableObjectNamespace;
 }

@@ -1,39 +1,17 @@
-export function buildResponse(text: string, status = 200) {
+import {Sitemap} from "@/models";
+
+export function buildResponse(sitemaps: Sitemap[], status = 200) {
 	// Build a HTML response containing the text
-	const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Examplee</title>
-        <style>
-        body {
-          font-family: sans-serif;
-          text-align: center;
-        }
-        h1 {
-          font-size: 7.5rem;
-        }
-        p {
-          color: #555555;
-          font-size: 2rem;
-        }
-        code:not(:last-child) {
-          margin-right: 2rem;
-        }
-        </style>
-    </head>
-    <body>
-        <h1>${text}</h1>
-        <p><code>/:id/</code><code>/:id/increment</code><code>/:id/decrement</code></p>
-    </body>
-    </html>
+	const html = `<?xml version="1.0" encoding="UTF-8"?>
+	<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+		${sitemaps.map(sitemap => sitemap.toString()).join("\n")}
+	</sitemapindex>
   `;
 
 	return new Response(html, {
 		status,
 		headers: {
-			// Content-Type must include text/html for live reload to work
-			"Content-Type": "text/html; charset=UTF-8",
+			"Content-Type": "application/xml; charset=UTF-8",
 		},
 	});
 }

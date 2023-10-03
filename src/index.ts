@@ -1,23 +1,15 @@
-export async function handleRequest(request: Request, env: Bindings) {
-	// Match route against pattern /:name/*action
-	const url = new URL(request.url);
-	const match = /\/(?<name>[^/]+)(?<action>.*)/.exec(url.pathname);
-	if (!match?.groups) {
-		// If we didn't specify a name, default to "test"
-		return Response.redirect(`${url.origin}/test/increment`, 302);
-	}
+export const SITEMAP_INDEX_OBJECT_NAME = "sitemapindex";
 
+export async function handleRequest(request: Request, env: Bindings) {
 	// Forward the request to the named Durable Object...
-	const { COUNTER } = env;
-	const id = COUNTER.idFromName(match.groups.name);
-	const stub = COUNTER.get(id);
-	// ...removing the name prefix from URL
-	url.pathname = match.groups.action;
-	return stub.fetch(url.toString());
+	const { SITEMAP_INDEX_GENERATOR } = env;
+	const id = SITEMAP_INDEX_GENERATOR.idFromName(SITEMAP_INDEX_OBJECT_NAME);
+	const stub = SITEMAP_INDEX_GENERATOR.get(id);
+	return stub.fetch(request);
 }
 
 const worker: ExportedHandler<Bindings> = { fetch: handleRequest };
 
 // Make sure we export the Counter Durable Object class
-export { Counter } from "./counter";
+export { SitemapIndexGenerator } from "./sitemap-index-generator";
 export default worker;

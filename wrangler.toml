@@ -5,12 +5,12 @@ compatibility_flags = []
 
 [durable_objects]
 bindings = [
-	{ name = "COUNTER", class_name = "Counter" }
+	{ name = "SITEMAP_INDEX_GENERATOR", class_name = "SitemapIndexGenerator" }
 ]
 
 [[migrations]]
 tag = "v1"
-new_classes = ["Counter"]
+new_classes = ["SitemapIndexGenerator"]
 
 [build]
 command = "node build.js"
