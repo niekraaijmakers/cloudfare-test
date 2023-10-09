@@ -3,14 +3,9 @@ main = "dist/index.mjs"
 compatibility_date = "2022-05-28"
 compatibility_flags = []
 
-[durable_objects]
-bindings = [
-	{ name = "SITEMAP_INDEX_GENERATOR", class_name = "SitemapIndexGenerator" }
-]
-
 [[migrations]]
 tag = "v1"
-new_classes = ["SitemapIndexGenerator"]
+new_classes = ["Types"]
 
 [build]
 command = "node build.js"

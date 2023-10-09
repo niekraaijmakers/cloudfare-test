@@ -1,15 +1,17 @@
-export const SITEMAP_INDEX_OBJECT_NAME = "sitemapindex";
+import SitemapIndexPrinter from "@/services/sitemap-index-printer";
+import {SitemapIndex} from "@/types";
+import SiteMapIndexGeneratorImpl from "@/services/sitemap-index-generator";
 
-export async function handleRequest(request: Request, env: Bindings) {
-	// Forward the request to the named Durable Object...
-	const { SITEMAP_INDEX_GENERATOR } = env;
-	const id = SITEMAP_INDEX_GENERATOR.idFromName(SITEMAP_INDEX_OBJECT_NAME);
-	const stub = SITEMAP_INDEX_GENERATOR.get(id);
-	return stub.fetch(request);
-}
+export default {
+	async fetch(request:Request) {
+		const { readable, writable } = new TransformStream()
 
-const worker: ExportedHandler<Bindings> = { fetch: handleRequest };
+		const printer:SitemapIndexPrinter = new SitemapIndexPrinter();
+		const index:SitemapIndex = new SiteMapIndexGeneratorImpl(request).generate();
+		printer.printSitemapIndex(index, writable.getWriter());
 
-// Make sure we export the Counter Durable Object class
-export { SitemapIndexGenerator } from "./sitemap-index-generator";
-export default worker;
+		return new Response(readable, {
+			headers: { "content-type": "application/xml" },
+		});
+	},
+};
