@@ -1,4 +1,5 @@
 import {Sitemap, SiteMapGenerator} from "@/types";
+import StandardPageSitemapGenerator from "@/services/sitemaps/standard-page-sitemap-generator";
 
 export default class SiteMapGeneratorImpl implements SiteMapGenerator{
 
@@ -6,18 +7,14 @@ export default class SiteMapGeneratorImpl implements SiteMapGenerator{
 
 	}
 
+	getDelegate(){
+		if(this.path === "page-sitemap.xml"){
+			return new StandardPageSitemapGenerator();
+		}
+		return new StandardPageSitemapGenerator();
+	}
 	generate(): Sitemap {
-		return {
-			loc: "https://www.example.com/sitemap.xml",
-			lastmod: "2021-09-01T00:00:00+00:00",
-			entries: [
-				{
-					loc: "https://www.example.com/my/page",
-					lastmod: "2021-09-01T00:00:00+00:00",
-					image: "https://www.example.com/images/example.png"
-				},
-			]
-		};
+		return this.getDelegate().generate();
 	}
 
 }

@@ -19,5 +19,5 @@ export interface SiteMapIndexGenerator{
 }
 
 export interface SiteMapGenerator{
-	generate(path:string): Sitemap
+	generate(): Sitemap
 }
