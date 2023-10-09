@@ -1,9 +1,10 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
-		"lib": ["esnext"],
-		"types": ["@cloudflare/workers-types"],
+		"lib": ["es2023"],
+		"module": "node16",
+		"target": "es2022",
+		"types": ["@cloudflare/workers-types", "node"],
 		"moduleResolution": "node",
 		"strict": true,
 		"noEmit": true,
@@ -13,5 +14,5 @@
 			"@/*": ["src/*"]
 		}
 	},
-	"include": ["src/**/*", "bindings.d.ts"]
+	"include": ["src/**/*"]
 }

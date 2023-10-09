@@ -1,3 +1,7 @@
+export interface Env {
+	API_HOST: string;
+}
+
 export interface SitemapEntry {
 	loc: string,
 	lastmod: string
@@ -15,9 +19,13 @@ export interface SitemapIndex {
 }
 
 export interface SiteMapIndexGenerator{
-	generate(): SitemapIndex
+	generate(): Promise<SitemapIndex>
+}
+
+export interface SiteMapIndexPrinter{
+
 }
 
 export interface SiteMapGenerator{
-	generate(): Sitemap
+	generate(): Promise<Sitemap>
 }

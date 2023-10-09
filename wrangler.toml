@@ -10,6 +10,9 @@ new_classes = ["Types"]
 [build]
 command = "node build.js"
 
+[vars]
+API_HOST = "http://example.com"
+
 [miniflare]
 kv_persist = true
 cache_persist = true

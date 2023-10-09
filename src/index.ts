@@ -1,5 +1,5 @@
 import SitemapIndexPrinter from "@/services/sitemap-index-printer";
-import {Sitemap, SitemapIndex} from "@/types";
+import {Env, Sitemap, SitemapIndex} from "@/types";
 import SitemapPrinter from "@/services/sitemap-printer";
 import SiteMapIndexGeneratorImpl from "@/services/sitemap-index-generator";
 import SiteMapGeneratorImpl from "@/services/sitemap-generator";
@@ -28,31 +28,32 @@ const responseFromReadable = (readable: ReadableStream) => new Response(readable
 });
 
 
-const generateSiteMapIndexResponse = (request:Request ):Response => {
+const generateSiteMapIndexResponse = async (env:Env, request:Request ): Promise<Response> => {
 	const { readable, writable } = new TransformStream()
-	const index: SitemapIndex = new SiteMapIndexGeneratorImpl(request).generate();
+	const index: SitemapIndex = await new SiteMapIndexGeneratorImpl(env, request).generate();
 	sitemapIndexPrinter.printSitemapIndex(index, writable.getWriter());
 
 	return responseFromReadable(readable);
 }
 
-const generateSiteMapResponse = (request:Request, path:string ):Response => {
+const generateSiteMapResponse = async (env:Env, request:Request, path:string ) : Promise<Response> => {
 	const { readable, writable } = new TransformStream()
-	const index: Sitemap = new SiteMapGeneratorImpl(request,path).generate();
+	const index: Sitemap = await new SiteMapGeneratorImpl(env, request,path).generate();
 	sitemapPrinter.printSitemapIndex(index, writable.getWriter());
 
 	return responseFromReadable(readable);
 }
 
+
 export default {
-	async fetch(request:Request) {
+	async fetch(request:Request, env: Env) {
 
 		const sitemapPath = getSitemapPath(request);
 
 		if(sitemapPath.length > 0)
-			return generateSiteMapResponse(request,sitemapPath);
+			return generateSiteMapResponse(env, request, sitemapPath);
 		else
-			return generateSiteMapIndexResponse(request);
+			return generateSiteMapIndexResponse(env, request);
 
 	},
 };
