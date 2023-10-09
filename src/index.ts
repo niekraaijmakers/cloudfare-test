@@ -10,10 +10,10 @@ const getSitemapPath = (request:Request):string => {
 	const url = new URL(request.url);
 	const path = url.pathname;
 
-	const matches: RegExpMatchArray | null = /sitemap\/(.*)/.exec(path);
+	const matches: RegExpMatchArray | null = /sitemap\/(?<path>.*)/.exec(path);
 
-	if(matches){
-		return matches[1];
+	if(matches && matches.groups && matches.groups.path){
+		return matches.groups.path;
 	}
 	return '';
 }
