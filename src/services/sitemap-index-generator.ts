@@ -11,9 +11,19 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 
 	async getTotalPages(indexPath:string){
 		const base = this.env.API_HOST;
-		const results = await fetch(base + indexPath + '/query-index.json?offset=0&limit=1');
+		const results = await fetch(base + '/' + indexPath + '/query-index.json?offset=0&limit=1');
 		const json: any = await results.json();
 		return Math.ceil(json.total / PAGE_SIZE);
+	}
+
+	getDelegateFn(sitemaps: Sitemap[], index:string){
+		return  (async () => {
+			const totalSitemapPages:number = await this.getTotalPages(index);
+			for(let page = 1; page <= totalSitemapPages; page++){
+				sitemaps.push(new SubIndexSitemapGenerator(this.env, index, page).generate());
+			}
+			return Promise.resolve();
+		})()
 	}
 
 	async generate(): Promise<SitemapIndex> {
@@ -22,13 +32,8 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 		const promiseArr:Promise<void>[] = [];
 
 
-		promiseArr.push( (async () => {
-			const totalSitemapPages:number = await this.getTotalPages('/article');
-			for(let page = 1; page <= totalSitemapPages; page++){
-				sitemaps.push(new SubIndexSitemapGenerator(this.env, 'article', page).generate());
-			}
-			return Promise.resolve();
-		})());
+		promiseArr.push(this.getDelegateFn(sitemaps, 'article'));
+		promiseArr.push(this.getDelegateFn(sitemaps, 'video'));
 
 		sitemaps.push(new StandardPageSitemapGenerator(this.env).generate());
 
