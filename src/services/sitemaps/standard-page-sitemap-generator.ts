@@ -7,14 +7,6 @@ export default class StandardPageSitemapGenerator implements SiteMapGenerator{
 	generate(): Sitemap {
 
 		const base = this.env.API_HOST;
-		// [
-		//
-		// 	{
-		// 		loc: "https://www.example.com/my/page",
-		// 		lastmod: "2021-09-01T00:00:00+00:00",
-		// 		image: "https://www.example.com/images/example.png"
-		// 	},
-		// ]
 
 		return {
 			async entries(): Promise<SitemapEntry[]> {
