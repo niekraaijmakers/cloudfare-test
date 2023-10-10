@@ -1,5 +1,5 @@
 import {Env, Sitemap, SitemapIndex, SiteMapIndexGenerator} from "@/types";
-import ArticleSitemapGenerator from "@/services/sitemaps/article-page-sitemap-generator";
+import SubIndexSitemapGenerator from "@/services/sitemaps/subindex-page-sitemap-generator";
 import {PAGE_SIZE} from "@/constants";
 import StandardPageSitemapGenerator from "@/services/sitemaps/standard-page-sitemap-generator";
 
@@ -25,7 +25,7 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 		promiseArr.push( (async () => {
 			const totalSitemapPages:number = await this.getTotalPages('/article');
 			for(let page = 1; page <= totalSitemapPages; page++){
-				sitemaps.push(new ArticleSitemapGenerator(this.env, 'sitemap-article-' + page + '.xml').generate());
+				sitemaps.push(new SubIndexSitemapGenerator(this.env, 'article', page).generate());
 			}
 			return Promise.resolve();
 		})());
