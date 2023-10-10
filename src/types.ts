@@ -11,7 +11,7 @@ export interface SitemapEntry {
 export interface Sitemap {
 	loc: string
 	lastmod: string
-	entries: SitemapEntry[]
+	entries(): Promise<SitemapEntry[]>
 }
 
 export interface SitemapIndex {
@@ -27,5 +27,5 @@ export interface SiteMapIndexPrinter{
 }
 
 export interface SiteMapGenerator{
-	generate(): Promise<Sitemap>
+	generate(): Sitemap
 }

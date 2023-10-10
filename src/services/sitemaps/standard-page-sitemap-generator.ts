@@ -1,16 +1,12 @@
-import {Env, Sitemap, SiteMapGenerator, SiteMapIndexPrinter} from "@/types";
+import {Env, Sitemap, SitemapEntry, SiteMapGenerator, SiteMapIndexPrinter} from "@/types";
 
 export default class StandardPageSitemapGenerator implements SiteMapGenerator{
 	constructor(private env: Env) {}
 
 
-	async generate(): Promise<Sitemap> {
+	generate(): Sitemap {
 
 		const base = this.env.API_HOST;
-
-		const results = await fetch(base + '/query-index.json')
-		const json:any = await results.json();
-
 		// [
 		//
 		// 	{
@@ -21,15 +17,23 @@ export default class StandardPageSitemapGenerator implements SiteMapGenerator{
 		// ]
 
 		return {
-			loc: "https://www.example.com/sitemap.xml",
-			lastmod: "2021-09-01T00:00:00+00:00",
-			entries: json.data.map((item:any) => {
-				return {
-					loc: base + item.path,
-					lastmod: item.lastModified,
-					image: base + item.image,
-				}
-			})
+			async entries(): Promise<SitemapEntry[]> {
+
+				const results = await fetch(base + '/query-index.json?sheet=sitemap')
+				const json: any = await results.json();
+
+				return json.data.map((item: any) => {
+					return {
+						loc: base + item.path,
+						lastmod: item.lastModified,
+						image: base + item.image,
+					}
+				})
+
+			},
+			loc: base + "/sitemap.xml",
+			lastmod: "2021-09-01T00:00:00+00:00"
+
 		};
 	}
 

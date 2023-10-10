@@ -39,7 +39,7 @@ const generateSiteMapIndexResponse = async (env:Env, request:Request ): Promise<
 const generateSiteMapResponse = async (env:Env, request:Request, path:string ) : Promise<Response> => {
 	const { readable, writable } = new TransformStream()
 	const index: Sitemap = await new SiteMapGeneratorImpl(env, request,path).generate();
-	sitemapPrinter.printSitemapIndex(index, writable.getWriter());
+	await sitemapPrinter.printSitemap(index, writable.getWriter());
 
 	return responseFromReadable(readable);
 }
