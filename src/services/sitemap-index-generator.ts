@@ -12,8 +12,14 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 	async getTotalPages(indexPath:string){
 		const base = this.env.API_HOST;
 		const results = await fetch(base + '/' + indexPath + '/query-index.json?offset=0&limit=1');
-		const json: any = await results.json();
-		return Math.ceil(json.total / PAGE_SIZE);
+
+		if(results.status === 200){
+			const json: any = await results.json();
+			return Math.ceil(json.total / PAGE_SIZE);
+		}else{
+			return 0;
+		}
+
 	}
 
 	getDelegateFn(sitemaps: Sitemap[], index:string){
