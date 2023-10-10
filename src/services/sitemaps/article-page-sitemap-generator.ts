@@ -8,11 +8,11 @@ export default class ArticleSitemapGenerator implements SiteMapGenerator{
 	generate(): Sitemap {
 
 		const base = this.env.API_HOST;
-		const matches: RegExpMatchArray | null = /article-sitemap-(?<page>[0-9]*)\.xml/.exec(this.path);
+		const matches: RegExpMatchArray | null = /article-(?<page>[0-9]*)\.xml/.exec(this.path);
 		const page = (matches && matches.groups && matches.groups.page) ? parseInt(matches.groups.page, 10) : 1;
 
 		return {
-			loc: base + "/sitemap/article-sitemap-" + page + ".xml",
+			loc: base + "/sitemap-article-" + page + ".xml",
 			lastmod: "2021-09-01T00:00:00+00:00",
 			async entries(): Promise<SitemapEntry[]> {
 				const results = await fetch(base + '/article/query-index.json?offset=' + (PAGE_SIZE * (page - 1 )) + '&limit=' + PAGE_SIZE);

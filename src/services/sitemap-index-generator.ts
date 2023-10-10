@@ -25,7 +25,7 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 		promiseArr.push( (async () => {
 			const totalSitemapPages:number = await this.getTotalPages('/article');
 			for(let page = 1; page <= totalSitemapPages; page++){
-				sitemaps.push(new ArticleSitemapGenerator(this.env, 'article-sitemap-' + page + '.xml').generate());
+				sitemaps.push(new ArticleSitemapGenerator(this.env, 'sitemap-article-' + page + '.xml').generate());
 			}
 			return Promise.resolve();
 		})());

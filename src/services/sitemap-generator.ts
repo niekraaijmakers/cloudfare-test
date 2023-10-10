@@ -10,10 +10,7 @@ export default class SiteMapGeneratorImpl implements SiteMapGenerator{
 	}
 
 	getDelegate(){
-		if(this.path === "page-sitemap.xml"){
-			return new StandardPageSitemapGenerator(this.env);
-		}
-		if(this.path.startsWith("article-sitemap-")){
+		if(this.path.startsWith("article-")){
 			return new ArticleSitemapGenerator(this.env, this.path);
 		}
 		return new StandardPageSitemapGenerator(this.env);
