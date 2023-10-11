@@ -20,7 +20,7 @@ export default class SiteMapGeneratorImpl implements SiteMapGenerator{
 		}
 
 	}
-	generate(): Sitemap {
+	async generate(): Promise<Sitemap> {
 		return this.getDelegate().generate();
 	}
 

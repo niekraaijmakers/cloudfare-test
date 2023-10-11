@@ -10,6 +10,7 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 	}
 
 	async getTotalPages(indexPath:string){
+		console.log("getting total pages for " + indexPath);
 		const base = this.env.API_HOST;
 		const results = await fetch(base + '/' + indexPath + '/query-index.json?offset=0&limit=1');
 
@@ -22,33 +23,33 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 
 	}
 
-	getDelegateFn(sitemaps: Sitemap[], index:string){
-		return  (async () => {
+	async getDelegateFn( index:string){
+
 			const totalSitemapPages:number = await this.getTotalPages(index);
+			const indexPromises:Promise<Sitemap>[] = [];
 			for(let page = 1; page <= totalSitemapPages; page++){
-				sitemaps.push(new SubIndexSitemapGenerator(this.env, index, page).generate());
+				const subIndexGenerator = new SubIndexSitemapGenerator(this.env, index, page);
+				indexPromises.push(subIndexGenerator.generate());
 			}
-			return Promise.resolve();
-		})()
+			return indexPromises;
+
 	}
 
 	async generate(): Promise<SitemapIndex> {
 
-		const sitemaps:Sitemap[] = [];
-		const promiseArr:Promise<void>[] = [];
+		const promiseArr:Promise<Sitemap>[] = [];
 
+		for (const index of this.env.INDEXES.split(",")) {
+			const indexPromises = await this.getDelegateFn(index);
+			indexPromises.forEach((sitemapPromise:Promise<Sitemap>) => {
+				promiseArr.push(sitemapPromise)
+			});
+		}
+		const sitemaps = await Promise.all(promiseArr);
 
-		INDEXES.forEach((index:string) => {
-			promiseArr.push(this.getDelegateFn(sitemaps, index));
-		});
-
-		sitemaps.push(new StandardPageSitemapGenerator(this.env).generate());
-
-		await Promise.all(promiseArr);
-
-		return Promise.resolve({
+		return {
 			sitemaps
-		})
+		}
 	}
 
 }

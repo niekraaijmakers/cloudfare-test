@@ -5,28 +5,39 @@ import {PAGE_SIZE} from "@/constants";
 export default class SubIndexSitemapGenerator implements SiteMapGenerator{
 	constructor(private  env: Env, private index: string, private page:number) { }
 
-	generate(): Sitemap {
+	async generate(): Promise<Sitemap> {
 
+		console.log("generating subindex sitemap for " + this.index + " page " + this.page);
 		const base = this.env.API_HOST;
     const index:string	= this.index;
 		const page:number = this.page;
 
-		return {
-			loc: base + "/sitemap-"+ this.index + "-" + page + ".xml",
-			lastmod: "2021-09-01T00:00:00+00:00",
-			async entries(): Promise<SitemapEntry[]> {
-				const results = await fetch(base + '/' + index + '/query-index.json?offset=' + (PAGE_SIZE * (page - 1 )) + '&limit=' + PAGE_SIZE);
-				const json: any = await results.json();
+		const results = await fetch(base + '/' + index + '/query-index.json?offset=' + (PAGE_SIZE * (page - 1 )) + '&limit=' + PAGE_SIZE);
+		const json: any = await results.json();
 
-				return json.data.map((item: any) => {
-					return {
-						loc: base + item.path,
-						lastmod: item.lastModified,
-						image: base + item.image,
-					}
-				})
+		let lastmod = 0;
+
+		const entries = json.data.map((item: any) => {
+
+			const lastModifiedParsed = parseInt(item.lastModified, 10);
+			if(lastModifiedParsed > lastmod){
+				lastmod = lastModifiedParsed;
 			}
 
+			return {
+				loc: base + item.path,
+				lastmod: item.lastModified,
+				image: base + item.image,
+			}
+		})
+
+		const lastModDate:Date = new Date();
+		lastModDate.setMilliseconds(lastmod);
+
+		return {
+			loc: base + "/sitemap-"+ this.index + "-" + page + ".xml",
+			lastmod: lastModDate.toISOString(),
+			entries,
 		}
 	}
 };

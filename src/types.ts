@@ -1,5 +1,6 @@
 export interface Env {
 	API_HOST: string;
+	INDEXES: string;
 }
 
 export interface SitemapEntry {
@@ -11,7 +12,7 @@ export interface SitemapEntry {
 export interface Sitemap {
 	loc: string
 	lastmod: string
-	entries(): Promise<SitemapEntry[]>
+	entries: SitemapEntry[]
 }
 
 export interface SitemapIndex {
@@ -27,5 +28,5 @@ export interface SiteMapIndexPrinter{
 }
 
 export interface SiteMapGenerator{
-	generate(): Sitemap
+	generate(): Promise<Sitemap>
 }
