@@ -24,10 +24,6 @@ export interface SiteMapIndexGenerator{
 	generate(): Promise<SitemapIndex>
 }
 
-export interface SiteMapIndexPrinter{
-
-}
-
 export interface SiteMapGenerator{
 	generate(): Promise<Sitemap>
 }
