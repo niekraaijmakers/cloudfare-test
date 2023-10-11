@@ -13,6 +13,7 @@ command = "node build.js"
 [vars]
 API_HOST = "http://example.com"
 INDEXES = ["article", "video"]
+PAGE_SIZE = 100
 
 [miniflare]
 kv_persist = true

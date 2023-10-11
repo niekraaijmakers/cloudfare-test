@@ -1,6 +1,6 @@
 import {Env, Sitemap, SitemapIndex, SiteMapIndexGenerator} from "@/types";
 import SubIndexSitemapGenerator from "@/services/sitemaps/subindex-page-sitemap-generator";
-import {INDEXES, PAGE_SIZE} from "@/constants";
+
 import StandardPageSitemapGenerator from "@/services/sitemaps/standard-page-sitemap-generator";
 
 export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
@@ -16,7 +16,7 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 
 		if(results.status === 200){
 			const json: any = await results.json();
-			return Math.ceil(json.total / PAGE_SIZE);
+			return Math.ceil(json.total / this.env.PAGE_SIZE);
 		}else{
 			return 0;
 		}
@@ -45,6 +45,8 @@ export default class SiteMapIndexGeneratorImpl implements SiteMapIndexGenerator{
 				promiseArr.push(sitemapPromise)
 			});
 		}
+		promiseArr.push(new StandardPageSitemapGenerator(this.env).generate());
+
 		const sitemaps = await Promise.all(promiseArr);
 
 		return {

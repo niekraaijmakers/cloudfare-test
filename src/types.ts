@@ -1,4 +1,5 @@
 export interface Env {
+	PAGE_SIZE: number;
 	API_HOST: string;
 	INDEXES: string;
 }
