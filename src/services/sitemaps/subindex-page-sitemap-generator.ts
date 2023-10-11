@@ -21,9 +21,12 @@ export default class SubIndexSitemapGenerator implements SiteMapGenerator{
 				lastmod = lastModifiedParsed;
 			}
 
+			const itemLastModDate = new Date();
+			itemLastModDate.setMilliseconds(lastModifiedParsed);
+
 			return {
 				loc: base + item.path,
-				lastmod: item.lastModified,
+				lastmod: itemLastModDate.toISOString(),
 				image: base + item.image,
 			}
 		})

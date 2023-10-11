@@ -10,26 +10,32 @@ export default class StandardPageSitemapGenerator implements SiteMapGenerator{
 		const results = await fetch(base + '/query-index.json?sheet=sitemap')
 		const json: any = await results.json();
 
-		let latestLastModifiedNumber = 0;
-		let lastmod:string = "";
+		let lastmod = 0;
 
 		const entries = json.data.map((item: any) => {
 
-			const lastModifiedParsed = new Date(item.lastModified).getTime();
-			if(lastModifiedParsed > latestLastModifiedNumber){
-				lastmod = item.lastModified;
+			const lastModifiedParsed = parseInt(item.lastModified, 10);
+			if(lastModifiedParsed > lastmod){
+				lastmod = lastModifiedParsed;
 			}
+
+			const itemLastModDate = new Date();
+			itemLastModDate.setMilliseconds(lastModifiedParsed);
+
 			return {
 				loc: base + item.path,
-				lastmod: item.lastModified,
+				lastmod: itemLastModDate.toISOString(),
 				image: base + item.image,
 			}
 		})
 
+		const lastModDate:Date = new Date();
+		lastModDate.setMilliseconds(lastmod);
+
 		return {
 			entries,
-			loc: base + "/sitemap.xml",
-			lastmod
+			loc: base + "/sitemap-standard-pages.xml",
+			lastmod: lastModDate.toISOString(),
 		};
 	}
 
