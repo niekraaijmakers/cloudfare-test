@@ -7,7 +7,6 @@ export default class SubIndexSitemapGenerator implements SiteMapGenerator{
 
 	async generate(): Promise<Sitemap> {
 
-		console.log("generating subindex sitemap for " + this.index + " page " + this.page);
 		const base = this.env.API_HOST;
     const index:string	= this.index;
 		const page:number = this.page;
